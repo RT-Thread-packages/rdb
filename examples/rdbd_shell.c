@@ -335,7 +335,7 @@ int rdbd_shell_service_init(void)
     LOG_I("status %d", shell_service->status);
     shell_device->type       = RT_Device_Class_Char;
 #ifdef RT_USING_DEVICE_OPS
-    device->ops         = &shell_ops;
+    shell_device->ops        = &shell_ops;
 #else
     shell_device->init       = rt_shell_service_device_init;
     shell_device->open       = rt_shell_service_device_open;
