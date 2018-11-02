@@ -61,11 +61,25 @@ RT-Thread online packages  --->
                   Version (latest)  --->
 ```
 
-各项示例功能的开启与关闭按需配置。
+
 
 然后让 RT-Thread 的包管理器自动更新，或者使用 `pkgs --update` 命令更新包到 BSP 中。
 
 ## 3. 注意事项
+**各项示例功能的开启与关闭请按需配置。**
+
+**没有开的功能是用不了的！！！**
+
+**需要足够的FD数量 仅rdb需要fd数量为 (服务数+1)x4**
+
+FD数量配置路径：
+
+```bash
+RT-Thread Components  --->
+    Device virtual file system  --->
+        (64)  The maximal number of opened files
+```
+
 
 在通信带宽满载的情况下同时使用多种功能会出现某一功能假死现象。在实时性要求较高的场所不建议使用大带宽功能，如文件传输。
 
