@@ -49,9 +49,9 @@ static struct udevice_descriptor dev_desc =
     USB_DESC_LENGTH_DEVICE,     //bLength;
     USB_DESC_TYPE_DEVICE,       //type;
     USB_BCD_VERSION,            //bcdUSB;
-    0x00,                       //bDeviceClass;
-    0x00,                       //bDeviceSubClass;
-    0x00,                       //bDeviceProtocol;
+    0xFF,                       //bDeviceClass;
+    0x30,                       //bDeviceSubClass;
+    0x17,                       //bDeviceProtocol;
     0x40,                       //bMaxPacketSize0;
     _VENDOR_ID,                 //idVendor;
     _PRODUCT_ID,                //idProduct;
@@ -68,8 +68,8 @@ static struct usb_qualifier_descriptor dev_qualifier =
     USB_DESC_TYPE_DEVICEQUALIFIER,  //bDescriptorType
     0x0200,                         //bcdUSB
     0xFF,                           //bDeviceClass
-    0x00,                           //bDeviceSubClass
-    0x00,                           //bDeviceProtocol
+    0x30,                           //bDeviceSubClass
+    0x17,                           //bDeviceProtocol
     64,                             //bMaxPacketSize0
     0x01,                           //bNumConfigurations
     0,
@@ -85,8 +85,8 @@ struct usb_rdbd_descriptor _usb_rdbd_desc =
         USB_DYNAMIC,
         0x01,
         0xFF,
-        0x00,
-        0x00,
+        0x30,
+        0x17,
         0x00,
     },
 #endif
@@ -98,8 +98,8 @@ struct usb_rdbd_descriptor _usb_rdbd_desc =
         0x00,                       //bAlternateSetting;
         0x02,                       //bNumEndpoints
         0xFF,                       //bInterfaceClass;
-        0x00,                       //bInterfaceSubClass;
-        0x00,                       //bInterfaceProtocol;
+        0x30,                       //bInterfaceSubClass;
+        0x17,                       //bInterfaceProtocol;
         0x00,                       //iInterface;
     },
     /*endpoint descriptor*/
@@ -132,19 +132,6 @@ const static char *_ustring[] =
     "Configuration",
     "Interface",
     USB_STRING_OS//must be
-};
-struct usb_os_proerty usb_rdbd_proerty[] =
-{
-    USB_OS_PROERTY_DESC(USB_OS_PROERTY_TYPE_REG_SZ, "DeviceInterfaceGUID", "{af2c84af-785c-4aba-ad24-72c5bbcd0504}"),
-};
-
-struct usb_os_function_comp_id_descriptor rdbd_usb_func_comp_id_desc =
-{
-    .bFirstInterfaceNumber = USB_DYNAMIC,
-    .reserved1          = 0x01,
-    .compatibleID       = {'W', 'I', 'N', 'U', 'S', 'B', 0x00, 0x00},
-    .subCompatibleID    = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-    .reserved2          = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 };
 
 void rt_hex_dump(const char *name, const char *buf, rt_size_t size)
@@ -204,14 +191,6 @@ static rt_err_t _interface_handler(ufunction_t func, ureq_t setup)
 {
     switch (setup->bRequest)
     {
-    case 'A':
-        switch (setup->wIndex)
-        {
-        case 0x05:
-            usbd_os_proerty_descriptor_send(func, setup, usb_rdbd_proerty, sizeof(usb_rdbd_proerty) / sizeof(usb_rdbd_proerty[0]));
-            break;
-        }
-        break;
      default:
         LOG_E("unsupport request 0x%02X", setup->bRequest);
         rt_usbd_ep0_set_stall(func->device);
@@ -248,7 +227,6 @@ static rt_err_t _rdbd_usb_descriptor_config(usb_rdbd_desc_t rdbd_desc, rt_uint8_
 #endif
     rdbd_desc->ep_out_desc.wMaxPacketSize = device_is_hs ? 512 : 64;
     rdbd_desc->ep_in_desc.wMaxPacketSize = device_is_hs ? 512 : 64;
-    rdbd_usb_func_comp_id_desc.bFirstInterfaceNumber = cintf_nr;
     return RT_EOK;
 }
 
@@ -301,7 +279,7 @@ ufunction_t rt_usbd_function_rdbd_usb_create(udevice_t device)
     /* add the interface to the mass storage function */
     rt_usbd_function_add_interface(rdbd_func, rdbd_usb_intf);
 
-    rt_usbd_os_comp_id_desc_add_os_func_comp_id_desc(device->os_comp_id_desc, &rdbd_usb_func_comp_id_desc);
+    //rt_usbd_os_comp_id_desc_add_os_func_comp_id_desc(device->os_comp_id_desc, &rdbd_usb_func_comp_id_desc);
     /* initilize winusb */
     rt_usb_rdbd_usb_init(rdbd_func);
     return rdbd_func;
