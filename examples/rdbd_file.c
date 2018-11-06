@@ -443,7 +443,6 @@ static void file_service_thread_entry(void * arg)
                             {
                                 rt_uint32_t hash = rdbd_file_calc_hash(path);
                                 memcpy(&msg->msg[msg->header.pathlength], &hash, 4);
-																rt_kprintf("HASH: 0x%08X\n", hash);
                             }
                             file_service_request_send(&request_write_list, msg, 0);
                             msg = RT_NULL;
@@ -885,7 +884,6 @@ static rt_uint32_t rdbd_file_calc_hash(const char * filename)
             break;
         }
         hash = fnv1a_r(ch, hash);
-        rt_kprintf("fnv1a_r 0x%08X\n", hash);
     }
     fclose(fp);
     return hash;
