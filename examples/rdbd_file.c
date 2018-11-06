@@ -442,7 +442,8 @@ static void file_service_thread_entry(void * arg)
                             msg = rt_realloc(msg, RDBD_FILE_MSG_SIZE(msg));
                             {
                                 rt_uint32_t hash = rdbd_file_calc_hash(path);
-                                memcpy(&msg->msg[msg->header.length], &hash, 4);
+                                memcpy(&msg->msg[msg->header.pathlength], &hash, 4);
+																rt_kprintf("HASH: 0x%08X\n", hash);
                             }
                             file_service_request_send(&request_write_list, msg, 0);
                             msg = RT_NULL;
@@ -868,7 +869,7 @@ static rt_uint32_t fnv1a_r(unsigned char oneByte, rt_uint32_t hash)
 static rt_uint32_t rdbd_file_calc_hash(const char * filename)
 {
     FILE * fp = NULL;
-    char ch;
+    int ch;
     uint32_t hash = RDBD_FILE_HASH_FNV_SEED;
     fp = fopen(filename, "r");
     if(fp == NULL)
@@ -876,10 +877,15 @@ static rt_uint32_t rdbd_file_calc_hash(const char * filename)
         LOG_W("%s not found!", filename);
         return 0;
     }
-    while(!feof(fp))
+    while(1)
     {
         ch = fgetc(fp);
+        if(ch == EOF)
+        {
+            break;
+        }
         hash = fnv1a_r(ch, hash);
+        rt_kprintf("fnv1a_r 0x%08X\n", hash);
     }
     fclose(fp);
     return hash;
