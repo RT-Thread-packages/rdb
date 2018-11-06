@@ -6,6 +6,8 @@
 
 rdb shell是一个用于finsh/msh通信的rdb服务
 
+**开启rdb shell后会重定向shell控制台串口不再有输出并非系统卡死**
+
 ### 1.2 RT-Thread端
 
 #### 1.2.1 开启rdb shell
