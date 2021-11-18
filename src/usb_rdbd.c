@@ -135,7 +135,7 @@ const static char *_ustring[] =
 };
 struct usb_os_proerty usb_rdbd_proerty[] =
 {
-    USB_OS_PROERTY_DESC(USB_OS_PROERTY_TYPE_REG_SZ, "DeviceInterfaceGUID", "{af2c84af-785c-4aba-ad24-72c5bbcd0504}"),
+    USB_OS_PROERTY_DESC(USB_OS_PROPERTY_TYPE_REG_SZ, "DeviceInterfaceGUID", "{af2c84af-785c-4aba-ad24-72c5bbcd0504}"),
 };
 
 struct usb_os_function_comp_id_descriptor rdbd_usb_func_comp_id_desc =
